@@ -1,0 +1,11 @@
+name: SweetMMORPG
+version: '${version}'
+main: top.mrxiaom.sweet.mmorpg.SweetMMORPG
+api-version: 1.13
+depend: [  ]
+softdepend: [ PlaceholderAPI ]
+authors: [ MrXiaoM ]
+commands:
+  sweetmmorpg:
+    description: 'The main command of SweetMMORPG'
+    aliases: [ smrpg ]
