@@ -2,8 +2,11 @@ name: SweetMMORPG
 version: '${version}'
 main: top.mrxiaom.sweet.mmorpg.SweetMMORPG
 api-version: 1.13
-depend: [  ]
-softdepend: [ PlaceholderAPI ]
+depend:
+  - MythicLib
+  - MMOItems
+softdepend:
+  - PlaceholderAPI
 authors: [ MrXiaoM ]
 commands:
   sweetmmorpg:
