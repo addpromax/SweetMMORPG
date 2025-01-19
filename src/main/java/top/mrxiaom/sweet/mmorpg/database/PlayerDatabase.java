@@ -29,6 +29,7 @@ public class PlayerDatabase extends AbstractPluginHolder implements IDatabase, L
     public PlayerDatabase(SweetMMORPG plugin) {
         super(plugin);
         registerEvents();
+        register();
     }
 
     public double getManaRatio() {
