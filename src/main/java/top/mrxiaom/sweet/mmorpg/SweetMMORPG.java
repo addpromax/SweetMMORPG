@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import top.mrxiaom.pluginbase.BukkitPlugin;
 import top.mrxiaom.sweet.mmorpg.api.StatType;
 import top.mrxiaom.sweet.mmorpg.comp.MMOHook;
+import top.mrxiaom.sweet.mmorpg.comp.Placeholders;
 import top.mrxiaom.sweet.mmorpg.database.PlayerDatabase;
 
 public class SweetMMORPG extends BukkitPlugin {
@@ -43,6 +44,9 @@ public class SweetMMORPG extends BukkitPlugin {
 
     @Override
     protected void afterEnable() {
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new Placeholders(this).register();
+        }
         MMOItems.plugin.setRPG(new MMOHook());
         Bukkit.getOnlinePlayers().forEach(playerDatabase::load);
         getLogger().info("SweetMMORPG 加载完毕");

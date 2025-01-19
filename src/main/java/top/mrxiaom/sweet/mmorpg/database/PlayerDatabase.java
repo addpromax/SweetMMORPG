@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.pluginbase.DatabaseHolder;
 import top.mrxiaom.pluginbase.database.IDatabase;
 import top.mrxiaom.pluginbase.utils.Util;
@@ -79,7 +80,9 @@ public class PlayerDatabase extends AbstractPluginHolder implements IDatabase, L
         return Collections.unmodifiableCollection(cache.values());
     }
 
+    @Nullable
     public ResourceData getOrCached(OfflinePlayer player) {
+        if (player == null) return null;
         return getOrCached(player.getUniqueId());
     }
 
