@@ -1,6 +1,6 @@
 # SweetMMORPG
 
-仅为 MMOItems 提供魔力值、体力值的，最基础的 RPG 核心插件。
+仅为 MMOItems 提供法力值、体力值的，最基础的 RPG 核心插件。
 
 ## 简介
 
