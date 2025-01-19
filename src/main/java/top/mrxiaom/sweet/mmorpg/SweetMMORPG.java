@@ -1,8 +1,8 @@
 package top.mrxiaom.sweet.mmorpg;
         
-import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.pluginbase.BukkitPlugin;
-import top.mrxiaom.pluginbase.EconomyHolder;
+import top.mrxiaom.sweet.mmorpg.api.StatType;
+import top.mrxiaom.sweet.mmorpg.database.PlayerDatabase;
 
 public class SweetMMORPG extends BukkitPlugin {
     public static SweetMMORPG getInstance() {
@@ -19,12 +19,22 @@ public class SweetMMORPG extends BukkitPlugin {
                 .scanIgnore("top.mrxiaom.sweet.mmorpg.libs")
         );
     }
+    private PlayerDatabase playerDatabase;
 
+    public PlayerDatabase getPlayerDatabase() {
+        return playerDatabase;
+    }
+
+    @Override
+    protected void beforeLoad() {
+        for (StatType type : StatType.values())
+            type.registerStat();
+    }
 
     @Override
     protected void beforeEnable() {
         options.registerDatabase(
-                // 在这里添加数据库 (如果需要的话)
+                playerDatabase = new PlayerDatabase(this)
         );
     }
 
