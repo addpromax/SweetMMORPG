@@ -16,3 +16,7 @@ regen-rate: 10
 default-ratio:
   mana: 75
   stamina: 75
+
+messages:
+  reload: '&a配置文件已重载'
+  reload-database: '&a数据库已重新连接'

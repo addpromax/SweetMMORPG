@@ -5,6 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,9 +17,16 @@ import java.util.*;
 
 @AutoRegister
 public class CommandMain extends AbstractModule implements CommandExecutor, TabCompleter, Listener {
+    private String msgReload, msgReloadDatabase;
     public CommandMain(SweetMMORPG plugin) {
         super(plugin);
         registerCommand("sweetmmorpg", this);
+    }
+
+    @Override
+    public void reloadConfig(MemoryConfiguration config) {
+        msgReload = config.getString("messages.reload", "");
+        msgReloadDatabase = config.getString("messages.reload-database", "");
     }
 
     @Override
@@ -27,10 +35,10 @@ public class CommandMain extends AbstractModule implements CommandExecutor, TabC
             if (args.length == 2 && "database".equalsIgnoreCase(args[1])) {
                 plugin.options.database().reloadConfig();
                 plugin.options.database().reconnect();
-                return t(sender, "&a数据库已重新连接");
+                return t(sender, msgReloadDatabase);
             }
             plugin.reloadConfig();
-            return t(sender, "&a配置文件已重载");
+            return t(sender, msgReload);
         }
         return true;
     }
