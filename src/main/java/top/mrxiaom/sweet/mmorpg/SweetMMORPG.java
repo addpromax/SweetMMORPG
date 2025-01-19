@@ -51,4 +51,9 @@ public class SweetMMORPG extends BukkitPlugin {
         Bukkit.getOnlinePlayers().forEach(playerDatabase::load);
         getLogger().info("SweetMMORPG 加载完毕");
     }
+
+    @Override
+    public void reloadConfig() {
+        super.reloadConfig();
+    }
 }
