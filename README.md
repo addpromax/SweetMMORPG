@@ -9,6 +9,7 @@
 
 ## 注意事项
 
+大概仅支持 MMOItems 6.10，不保证其它版本可正常使用。  
 请注意 MMOItems 默认配置中的 `modifiers/example-modifiers.yml` 和 `item-sets.yml` 均有放大 `max-mana`，使得最高法力值提升的配置。  
 另外，不要将本插件与 MMOCore 一齐使用，本插件会覆盖掉 MMOCore 的等级、class、技能等功能。
 
