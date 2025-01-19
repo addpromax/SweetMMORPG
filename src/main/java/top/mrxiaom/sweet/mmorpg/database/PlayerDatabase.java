@@ -19,9 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerDatabase extends AbstractPluginHolder implements IDatabase, Listener {
     private String table;
@@ -75,6 +73,10 @@ public class PlayerDatabase extends AbstractPluginHolder implements IDatabase, L
         if (data != null) {
             save(data);
         }
+    }
+
+    public Collection<ResourceData> getCaches() {
+        return Collections.unmodifiableCollection(cache.values());
     }
 
     public ResourceData getOrCached(OfflinePlayer player) {
