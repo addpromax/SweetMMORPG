@@ -30,7 +30,7 @@ public class MMOHook implements RPGHandler, Listener {
         public MMOPlayer(PlayerData playerData) {
             super(playerData);
 
-            this.data = SweetMMORPG.getInstance().getPlayerDatabase().get(this.getPlayer());
+            this.data = SweetMMORPG.getInstance().getPlayerDatabase().getOrCached(playerData.getUniqueId());
         }
 
         public int getLevel() {
