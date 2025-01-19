@@ -1,7 +1,10 @@
 package top.mrxiaom.sweet.mmorpg;
         
+import net.Indyuce.mmoitems.MMOItems;
+import org.bukkit.Bukkit;
 import top.mrxiaom.pluginbase.BukkitPlugin;
 import top.mrxiaom.sweet.mmorpg.api.StatType;
+import top.mrxiaom.sweet.mmorpg.comp.MMOHook;
 import top.mrxiaom.sweet.mmorpg.database.PlayerDatabase;
 
 public class SweetMMORPG extends BukkitPlugin {
@@ -40,6 +43,8 @@ public class SweetMMORPG extends BukkitPlugin {
 
     @Override
     protected void afterEnable() {
+        MMOItems.plugin.setRPG(new MMOHook());
+        Bukkit.getOnlinePlayers().forEach(playerDatabase::load);
         getLogger().info("SweetMMORPG 加载完毕");
     }
 }
