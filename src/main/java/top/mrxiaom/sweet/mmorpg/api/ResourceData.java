@@ -3,7 +3,9 @@ package top.mrxiaom.sweet.mmorpg.api;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import org.bukkit.Bukkit;
+import top.mrxiaom.sweet.mmorpg.SweetMMORPG;
 import top.mrxiaom.sweet.mmorpg.api.event.ResourceRegainEvent;
+import top.mrxiaom.sweet.mmorpg.database.PlayerDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +19,11 @@ public class ResourceData {
 
     private final List<StatModifier> registeredModifiers = new ArrayList<>();
 
-    public ResourceData(MMOPlayerData data, double mana, double stamina) {
+    public ResourceData(MMOPlayerData data, Double mana, Double stamina) {
         this.data = data;
-        this.mana = mana;
-        this.stamina = stamina;
         registerModifiers();
+        this.setMana(mana);
+        this.setStamina(stamina);
     }
 
     public void unregisterModifiers() {
@@ -85,11 +87,21 @@ public class ResourceData {
             setStamina(stamina + called.getAmount());
     }
 
-    public void setMana(double value) {
-        mana = Math.max(0, Math.min(getStat("MAX_MANA"), value));
+    public void setMana(Double value) {
+        double max = getStat("MAX_MANA");
+        if (value == null) {
+            PlayerDatabase db = SweetMMORPG.getInstance().getPlayerDatabase();
+            value = db.getManaRatio() * max;
+        }
+        mana = Math.max(0, Math.min(max, value));
     }
 
-    public void setStamina(double value) {
-        stamina = Math.max(0, Math.min(getStat(StatType.MAX_STAMINA), value));
+    public void setStamina(Double value) {
+        double max = getStat(StatType.MAX_STAMINA);
+        if (value == null) {
+            PlayerDatabase db = SweetMMORPG.getInstance().getPlayerDatabase();
+            value = db.getStaminaRatio() * max;
+        }
+        stamina = Math.max(0, Math.min(max, value));
     }
 }

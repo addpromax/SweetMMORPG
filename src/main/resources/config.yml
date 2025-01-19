@@ -1,0 +1,18 @@
+# 默认值
+default:
+  # 最大法力值
+  max-mana: 20
+  # 最大耐力值
+  max-stamina: 20
+  # 每秒法力值恢复多少
+  mana-regeneration: 0.5
+  # 每秒耐力值恢复多少
+  stamina-regeneration: 0.5
+
+# 法力值、耐力值的恢复速率，单位为 ticks
+regen-rate: 10
+
+# 首次进入服务器，玩家拥有相对于最大值的 百分之多少的 法力值和耐力值
+default-ratio:
+  mana: 75
+  stamina: 75

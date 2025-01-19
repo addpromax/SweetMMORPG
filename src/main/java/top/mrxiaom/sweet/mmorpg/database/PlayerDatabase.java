@@ -3,7 +3,6 @@ package top.mrxiaom.sweet.mmorpg.database;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.MemoryConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -27,9 +26,18 @@ import java.util.UUID;
 public class PlayerDatabase extends AbstractPluginHolder implements IDatabase, Listener {
     private String table;
     Map<UUID, ResourceData> cache = new HashMap<>();
+    double manaRatio, staminaRatio;
     public PlayerDatabase(SweetMMORPG plugin) {
         super(plugin);
         registerEvents();
+    }
+
+    public double getManaRatio() {
+        return manaRatio;
+    }
+
+    public double getStaminaRatio() {
+        return staminaRatio;
     }
 
     @Override
@@ -39,6 +47,8 @@ public class PlayerDatabase extends AbstractPluginHolder implements IDatabase, L
 
     @Override
     public void reloadConfig(MemoryConfiguration config) {
+        manaRatio = config.getDouble("default-ratio.mana", 75) / 100.0;
+        staminaRatio = config.getDouble("default-ratio.stamina", 75) / 100.0;
         // 重新注册 stat modifier
         for (ResourceData data : cache.values()) {
             data.unregisterModifiers();
@@ -117,13 +127,10 @@ public class PlayerDatabase extends AbstractPluginHolder implements IDatabase, L
         } catch (SQLException e) {
             warn(e);
         }
-        // TODO: 出现异常，或出现无法获取的情况，则使用默认配置
-        double mana = 0;
-        double stamina = 0;
-        return getOrCreateData(uuid, mana, stamina, false);
+        return getOrCreateData(uuid, null, null, false);
     }
 
-    private ResourceData getOrCreateData(UUID uuid, double defaultMana, double defaultStamina, boolean setIfCached) {
+    private ResourceData getOrCreateData(UUID uuid, Double defaultMana, Double defaultStamina, boolean setIfCached) {
         ResourceData data = cache.get(uuid);
         if (data == null) {
             data = new ResourceData(MMOPlayerData.get(uuid), defaultMana, defaultStamina);
