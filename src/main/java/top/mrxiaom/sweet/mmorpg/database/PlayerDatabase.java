@@ -115,6 +115,7 @@ public class PlayerDatabase extends AbstractPluginHolder implements IDatabase, L
     }
 
     public ResourceData load(UUID uuid) {
+        boolean error = false;
         try (Connection conn = plugin.getConnection();
             PreparedStatement ps = conn.prepareStatement(
                     "SELECT * FROM `" + table + "` WHERE `uuid`=?;"
@@ -131,9 +132,12 @@ public class PlayerDatabase extends AbstractPluginHolder implements IDatabase, L
                 }
             }
         } catch (SQLException e) {
+            error = true;
             warn(e);
         }
-        return getOrCreateData(uuid, null, null, false);
+        ResourceData data = getOrCreateData(uuid, null, null, false);
+        if (!error) save(data);
+        return data;
     }
 
     private ResourceData getOrCreateData(UUID uuid, Double defaultMana, Double defaultStamina, boolean setIfCached) {
