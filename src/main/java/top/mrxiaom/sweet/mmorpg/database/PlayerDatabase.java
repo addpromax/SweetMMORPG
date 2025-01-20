@@ -154,6 +154,9 @@ public class PlayerDatabase extends AbstractPluginHolder implements IDatabase, L
 
     public void save(ResourceData data) {
         UUID uuid = data.getUniqueId();
+        if (!cache.containsKey(uuid)) {
+            data.unregisterModifiers();
+        }
         String name = Util.getOfflinePlayer(uuid).map(OfflinePlayer::getName).orElse(null);
         double mana = data.getMana();
         double stamina = data.getStamina();

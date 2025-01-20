@@ -1,6 +1,8 @@
 package top.mrxiaom.sweet.mmorpg.api;
 
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
+import io.lumine.mythic.lib.api.stat.StatInstance;
+import io.lumine.mythic.lib.api.stat.StatMap;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import org.bukkit.Bukkit;
 import top.mrxiaom.sweet.mmorpg.SweetMMORPG;
@@ -34,7 +36,16 @@ public class ResourceData {
     }
 
     public void registerModifiers() {
+        StatMap statMap = data.getStatMap();
         for (StatType stat : StatType.values()) {
+            StatInstance inst = statMap.getInstance(stat.name());
+            List<StatModifier> modifiers = new ArrayList<>(inst.getModifiers());
+            for (StatModifier modifier : modifiers) {
+                if (modifier.getKey().equals("manaAndStamina")) {
+                    modifier.unregister(data);
+                }
+            }
+            modifiers.clear();
             StatModifier modifier = new StatModifier("manaAndStamina", stat.name(), stat.getBase());
             modifier.register(data);
             registeredModifiers.add(modifier);
