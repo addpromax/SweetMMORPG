@@ -20,3 +20,8 @@ default-ratio:
 messages:
   reload: '&a配置文件已重载'
   reload-database: '&a数据库已重新连接'
+  not-type: '&e输入类型不正确，应为 mana 或 stamina'
+  not-online: '&e玩家不在线 (或不存在)'
+  not-number: '&e请输入正确的数值'
+  give-mana: '&a已给予玩家&e %player% &a法力值&e %value% &a点'
+  give-stamina: '&a已给予玩家&e %player% &a耐力值&e %value% &a点'
