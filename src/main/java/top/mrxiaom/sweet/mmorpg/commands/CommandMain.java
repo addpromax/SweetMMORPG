@@ -83,7 +83,7 @@ public class CommandMain extends AbstractModule implements CommandExecutor, TabC
 
     private static final List<String> emptyList = Lists.newArrayList();
     private static final List<String> listArg0 = Lists.newArrayList();
-    private static final List<String> listOpArg0 = Lists.newArrayList("reload");
+    private static final List<String> listOpArg0 = Lists.newArrayList("give", "reload");
     private static final List<String> listArgs1Reload = Lists.newArrayList("database");
     private static final List<String> listArgs1Give = Lists.newArrayList("mana", "stamina");
     private static final List<String> listArgs4Give = Lists.newArrayList("-s");
