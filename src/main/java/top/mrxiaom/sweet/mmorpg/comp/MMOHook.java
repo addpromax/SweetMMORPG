@@ -10,10 +10,10 @@ import top.mrxiaom.sweet.mmorpg.SweetMMORPG;
 import top.mrxiaom.sweet.mmorpg.api.ResourceData;
 
 public class MMOHook implements RPGHandler, Listener {
-
+    LevelChangeResolver levelChange = new LevelChangeResolver();
     @EventHandler
     public void a(PlayerLevelChangeEvent event) {
-        PlayerData.get(event.getPlayer()).getInventory().scheduleUpdate();
+        levelChange.resolve(event.getPlayer());
     }
 
     public RPGPlayer getInfo(PlayerData data) {
