@@ -9,9 +9,30 @@
 
 ## 注意事项
 
-大概仅支持 MMOItems 6.10，不保证其它版本可正常使用。  
+大概仅支持 MMOItems 6.10 正式版，鉴于 MMOItems 非常喜欢大改接口，不保证其它版本可正常使用。多一个小版本，甚至是同一个版本号的开发版（SNAPSHOT）都可能不行。没事就不要升级 MMOItems。  
 请注意 MMOItems 默认配置中的 `modifiers/example-modifiers.yml` 和 `item-sets.yml` 均有放大 `max-mana`，使得最高法力值提升的配置。  
 另外，不要将本插件与 MMOCore 一齐使用，本插件会覆盖掉 MMOCore 的等级、class、技能等功能。
+
+## 命令
+
+根命令为 `/sweetmmorpg`，别名为 `/smrpg`。所有命令均为仅管理员可用。
+
+| 命令                                   | 描述                                         |
+|--------------------------------------|--------------------------------------------|
+| `/smrpg give mana <玩家> <数值> [-s]`    | 给予玩家法力值，最终玩家的法力值不会超过最大值，可输入最大法力值来让玩家的法力值回满 |
+| `/smrpg give stamina <玩家> <数值> [-s]` | 给予玩家体力值，最终玩家的体力值不会超过最大值，可输入最大体力值来让玩家的体力值回满 |
+| `/smrpg reload`                      | 重载插件配置文件                                   |
+
+## PAPI 变量
+
+```
+%sweetmmorpg_mana%
+%sweetmmorpg_stamina%
+%sweetmmorpg_max_mana%
+%sweetmmorpg_max_stamina%
+%sweetmmorpg_mana_regen%
+%sweetmmorpg_stamina_regen%
+```
 
 ## 鸣谢
 
