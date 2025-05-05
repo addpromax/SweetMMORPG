@@ -42,7 +42,7 @@ public class CommandMain extends AbstractModule implements CommandExecutor, TabC
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length >= 4 && "give".equalsIgnoreCase(args[0]) && sender.isOp()) {
             String type = args[1];
-            if (!type.equals("mana") && !type.equals("stamina")) {
+            if (!type.equals("stamina")) {
                 return t(sender, msgNotType);
             }
             Player player = Util.getOnlinePlayer(args[2]).orElse(null);
@@ -55,12 +55,6 @@ public class CommandMain extends AbstractModule implements CommandExecutor, TabC
                 return t(sender, msgNotNumber);
             }
             boolean silent = args.length >= 5 && args[4].equals("-s");
-            if (type.equals("mana")) {
-                data.giveMana(value, ResourceRegainReason.PLUGIN);
-                if (!silent) return t(sender, msgGiveMana
-                        .replace("%player%", player.getName())
-                        .replace("%value%", String.valueOf(value)));
-            }
             if (type.equals("stamina")) {
                 data.giveStamina(value, ResourceRegainReason.PLUGIN);
                 if (!silent) return t(sender, msgGiveStamina

@@ -16,15 +16,13 @@ import java.util.UUID;
 public class ResourceData {
     private final MMOPlayerData data;
 
-    private double mana;
     private double stamina;
 
     private final List<StatModifier> registeredModifiers = new ArrayList<>();
 
-    public ResourceData(MMOPlayerData data, Double mana, Double stamina) {
+    public ResourceData(MMOPlayerData data, Double mana) {
         this.data = data;
         registerModifiers();
-        this.setMana(mana);
         this.setStamina(stamina);
     }
 
@@ -60,10 +58,6 @@ public class ResourceData {
         return data.getUniqueId();
     }
 
-    public double getMana() {
-        return mana;
-    }
-
     public double getStamina() {
         return stamina;
     }
@@ -76,17 +70,6 @@ public class ResourceData {
         return data.getStatMap().getStat(type);
     }
 
-    public void giveMana(double value) {
-        giveMana(value, ResourceRegainReason.PLUGIN);
-    }
-
-    public void giveMana(double value, ResourceRegainReason reason) {
-        ResourceRegainEvent called = new ResourceRegainEvent(this, value, reason, ResourceType.MANA);
-        Bukkit.getPluginManager().callEvent(called);
-        if (!called.isCancelled())
-            setMana(mana + called.getAmount());
-    }
-
     public void giveStamina(double value) {
         giveStamina(value, ResourceRegainReason.OTHER);
     }
@@ -96,15 +79,6 @@ public class ResourceData {
         Bukkit.getPluginManager().callEvent(called);
         if (!called.isCancelled())
             setStamina(stamina + called.getAmount());
-    }
-
-    public void setMana(Double value) {
-        double max = getStat("MAX_MANA");
-        if (value == null) {
-            PlayerDatabase db = SweetMMORPG.getInstance().getPlayerDatabase();
-            value = db.getManaRatio() * max;
-        }
-        mana = Math.max(0, Math.min(max, value));
     }
 
     public void setStamina(Double value) {

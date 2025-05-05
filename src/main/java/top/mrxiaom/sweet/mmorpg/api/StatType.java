@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum StatType {
-    MAX_MANA(null),
     MAX_STAMINA(new MaxStamina()),
     MANA_REGENERATION(new ManaRegeneration()),
     STAMINA_REGENERATION(new StaminaRegeneration());

@@ -34,12 +34,8 @@ public class Placeholders extends PlaceholderExpansion {
         ResourceData data = plugin.getPlayerDatabase().getOrCached(player);
         if (data == null) return "null";
         switch (params.toLowerCase()) {
-            case "mana":
-                return MythicLib.plugin.getMMOConfig().decimal.format(data.getMana());
             case "stamina":
                 return MythicLib.plugin.getMMOConfig().decimal.format(data.getStamina());
-            case "max_mana":
-                return MythicLib.plugin.getMMOConfig().decimal.format(data.getStat(StatType.MAX_MANA));
             case "max_stamina":
                 return MythicLib.plugin.getMMOConfig().decimal.format(data.getStat(StatType.MAX_STAMINA));
             case "mana_regen":

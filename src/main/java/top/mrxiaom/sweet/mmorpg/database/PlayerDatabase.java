@@ -25,16 +25,15 @@ import java.util.*;
 public class PlayerDatabase extends AbstractPluginHolder implements IDatabase, Listener {
     private String table;
     Map<UUID, ResourceData> cache = new HashMap<>();
-    double manaRatio, staminaRatio;
+    double staminaRatio; // 移除 manaRatio
+
     public PlayerDatabase(SweetMMORPG plugin) {
         super(plugin);
         registerEvents();
         register();
     }
 
-    public double getManaRatio() {
-        return manaRatio;
-    }
+    // 移除 getManaRatio 方法
 
     public double getStaminaRatio() {
         return staminaRatio;
@@ -47,34 +46,54 @@ public class PlayerDatabase extends AbstractPluginHolder implements IDatabase, L
 
     @Override
     public void reloadConfig(MemoryConfiguration config) {
-        manaRatio = config.getDouble("default-ratio.mana", 75) / 100.0;
+        // 移除 manaRatio 配置项
         staminaRatio = config.getDouble("default-ratio.stamina", 75) / 100.0;
-        // 重新注册 stat modifier
         for (ResourceData data : cache.values()) {
             data.unregisterModifiers();
             data.registerModifiers();
         }
     }
 
-    @EventHandler
-    public void onJoin(PlayerJoinEvent e) {
-        load(e.getPlayer());
-    }
+    // ... 事件处理保持不变 ...
 
-    @EventHandler
-    public void onQuit(PlayerQuitEvent e) {
-        ResourceData data = cache.remove(e.getPlayer().getUniqueId());
-        if (data != null) {
-            save(data);
+    @Override
+    public void reload(Connection conn, String prefix) throws SQLException {
+        table = (prefix + "playerdata").toLowerCase();
+        try (PreparedStatement ps = conn.prepareStatement(
+                "CREATE TABLE if NOT EXISTS `" + table + "`(" +
+                        "`uuid` VARCHAR(48) PRIMARY KEY," +
+                        "`name` VARCHAR(48)," +
+                        // 移除 mana 字段
+                        "`stamina` DECIMAL(10, 2)" +
+                        ");"
+        )) {
+            ps.execute();
         }
     }
 
-    @EventHandler
-    public void onKick(PlayerKickEvent e) {
-        ResourceData data = cache.remove(e.getPlayer().getUniqueId());
-        if (data != null) {
-            save(data);
+    public ResourceData load(UUID uuid) {
+        boolean error = false;
+        try (Connection conn = plugin.getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "SELECT * FROM `" + table + "` WHERE `uuid`=?;"
+             )) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet resultSet = ps.executeQuery()) {
+                if (resultSet.next()) {
+                    // 移除 mana 读取
+                    double stamina = resultSet.getDouble("stamina");
+                    ResourceData data = getOrCreateData(uuid, stamina, true);
+                    data.setStamina(stamina);
+                    return data;
+                }
+            }
+        } catch (SQLException e) {
+            error = true;
+            warn(e);
         }
+        ResourceData data = getOrCreateData(uuid, null, false);
+        if (!error) save(data);
+        return data;
     }
 
     public Collection<ResourceData> getCaches() {
@@ -87,6 +106,18 @@ public class PlayerDatabase extends AbstractPluginHolder implements IDatabase, L
         return getOrCached(player.getUniqueId());
     }
 
+    private ResourceData getOrCreateData(UUID uuid, Double defaultStamina, boolean setIfCached) {
+        ResourceData data = cache.get(uuid);
+        if (data == null) {
+            // 移除 mana 参数
+            data = new ResourceData(MMOPlayerData.get(uuid), defaultStamina);
+            cache.put(uuid, data);
+        } else if (setIfCached) {
+            data.setStamina(defaultStamina);
+        }
+        return data;
+    }
+
     public ResourceData getOrCached(UUID uuid) {
         ResourceData cached = cache.get(uuid);
         if (cached != null) {
@@ -95,101 +126,45 @@ public class PlayerDatabase extends AbstractPluginHolder implements IDatabase, L
         return load(uuid);
     }
 
-    @Override
-    public void reload(Connection conn, String prefix) throws SQLException {
-        table = (prefix + "playerdata").toLowerCase();
-        try (PreparedStatement ps = conn.prepareStatement(
-                "CREATE TABLE if NOT EXISTS `" + table + "`(" +
-                        "`uuid` VARCHAR(48) PRIMARY KEY," +
-                        "`name` VARCHAR(48)," +
-                        "`mana` DECIMAL(10, 2)," +
-                        "`stamina` DECIMAL(10, 2)" +
-                ");"
-        )) {
-            ps.execute();
-        }
-    }
-
-    public ResourceData load(OfflinePlayer player) {
-        return load(player.getUniqueId());
-    }
-
-    public ResourceData load(UUID uuid) {
-        boolean error = false;
-        try (Connection conn = plugin.getConnection();
-            PreparedStatement ps = conn.prepareStatement(
-                    "SELECT * FROM `" + table + "` WHERE `uuid`=?;"
-            )) {
-            ps.setString(1, uuid.toString());
-            try (ResultSet resultSet = ps.executeQuery()) {
-                if (resultSet.next()) {
-                    double mana = resultSet.getDouble("mana");
-                    double stamina = resultSet.getDouble("stamina");
-                    ResourceData data = getOrCreateData(uuid, mana, stamina, true);
-                    data.setMana(mana);
-                    data.setStamina(stamina);
-                    return data;
-                }
-            }
-        } catch (SQLException e) {
-            error = true;
-            warn(e);
-        }
-        ResourceData data = getOrCreateData(uuid, null, null, false);
-        if (!error) save(data);
-        return data;
-    }
-
-    private ResourceData getOrCreateData(UUID uuid, Double defaultMana, Double defaultStamina, boolean setIfCached) {
-        ResourceData data = cache.get(uuid);
-        if (data == null) {
-            data = new ResourceData(MMOPlayerData.get(uuid), defaultMana, defaultStamina);
-            cache.put(uuid, data);
-        } else if (setIfCached) {
-            data.setMana(defaultMana);
-            data.setStamina(defaultStamina);
-        }
-        return data;
-    }
-
     public void save(ResourceData data) {
         UUID uuid = data.getUniqueId();
         if (!cache.containsKey(uuid)) {
             data.unregisterModifiers();
         }
         String name = Util.getOfflinePlayer(uuid).map(OfflinePlayer::getName).orElse(null);
-        double mana = data.getMana();
         double stamina = data.getStamina();
         try (Connection conn = plugin.getConnection()) {
-            save(conn, uuid, name == null ? "" : name, mana, stamina);
+            // 移除 mana 参数
+            save(conn, uuid, name == null ? "" : name, stamina);
         } catch (SQLException e) {
             warn(e);
         }
     }
 
-    private void save(Connection conn, UUID uuid, String name, double mana, double stamina) throws SQLException {
+    private void save(Connection conn, UUID uuid, String name, double stamina) throws SQLException {
         DatabaseHolder holder = plugin.options.database();
         if (holder.isSQLite()) {
             try (PreparedStatement ps = conn.prepareStatement(
-                         "INSERT OR REPLACE INTO `" + table + "`(`uuid`,`name`,`mana`,`stamina`) VALUES(?, ?, ?, ?);"
-                 )) {
+                    // 调整 SQLite 语句
+                    "INSERT OR REPLACE INTO `" + table + "`(`uuid`,`name`,`stamina`) VALUES(?, ?, ?);"
+            )) {
                 ps.setString(1, uuid.toString());
                 ps.setString(2, name);
-                ps.setDouble(3, mana);
-                ps.setDouble(4, stamina);
+                ps.setDouble(3, stamina); // 参数索引调整
                 ps.execute();
             }
         } else if (holder.isMySQL()) {
             try (PreparedStatement ps = conn.prepareStatement(
-                         "INSERT INTO `" + table + "`(`uuid`,`name`,`mana`,`stamina`) VALUES(?, ?, ?, ?) on duplicate key update `name`=?, `mana`=?, `stamina`=?;"
-                 )) {
+                    // 调整 MySQL 语句
+                    "INSERT INTO `" + table + "`(`uuid`,`name`,`stamina`) VALUES(?, ?, ?) " +
+                            "on duplicate key update `name`=?, `stamina`=?;"
+            )) {
                 ps.setString(1, uuid.toString());
                 ps.setString(2, name);
-                ps.setDouble(3, mana);
-                ps.setDouble(4, stamina);
-                ps.setString(5, name);
-                ps.setDouble(6, mana);
-                ps.setDouble(7, stamina);
+                ps.setDouble(3, stamina);
+                // 更新部分参数
+                ps.setString(4, name);
+                ps.setDouble(5, stamina);
                 ps.execute();
             }
         }

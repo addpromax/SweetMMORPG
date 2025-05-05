@@ -27,7 +27,6 @@ public class StatRegenManager extends AbstractModule {
         task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             for (ResourceData data : plugin.getPlayerDatabase().getCaches()) {
                 if (data.toMythicLib().isOnline()) {
-                    data.giveMana(data.getStat(StatType.MANA_REGENERATION) * regenRate / 20, ResourceRegainReason.REGENERATION);
                     data.giveStamina(data.getStat(StatType.STAMINA_REGENERATION) * regenRate / 20, ResourceRegainReason.REGENERATION);
                 }
             }

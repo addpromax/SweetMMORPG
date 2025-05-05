@@ -53,7 +53,7 @@ public class SweetMMORPG extends BukkitPlugin {
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new Placeholders(this).register();
         }
-        MMOHook handler = new MMOHook();
+        MMOHook handler = new MMOHook(this);
         try {
             // https://gitlab.com/phoenix-dvpmt/mmoitems/-/issues/1699
             MMOItems.plugin.setRPG(handler);
@@ -74,7 +74,6 @@ public class SweetMMORPG extends BukkitPlugin {
                 Bukkit.getPluginManager().registerEvents(handler, this);
             }
         }
-        Bukkit.getOnlinePlayers().forEach(playerDatabase::load);
         getLogger().info("SweetMMORPG 加载完毕");
     }
 
